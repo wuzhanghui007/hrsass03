@@ -68,23 +68,18 @@ export default {
       } */
       validMobile(value) ? callback() : callback(new Error('手机号格式不正确'))
     }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('密码长度在6-16位'))
-      } else {
-        callback()
-      }
-    }
+
     return {
       loginForm: {
         mobile: '13800000002',
         password: '123456'
       },
       loginRules: {
-        mobile: [{ required: true, trigger: 'blur', messaage: '手机号不能为空' },
+        mobile: [{ required: true, trigger: 'blur', message: '手机号不能为空' },
           { validator: validMobiles, trigger: 'blur' }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword },
-          { min: 6, max: 16, trigger: 'blur', messaage: '密码长度在6-16位' }]
+        password: [{ required: true, trigger: 'blur' }, {
+          trigger: 'blur', min: 6, max: 16, message: '密码长度在6-16位'
+        }]
       },
       loading: false,
       passwordType: 'password',
@@ -164,8 +159,10 @@ $cursor: #fff;
       caret-color: $cursor;
 
       &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: $cursor !important;
+        box-shadow: 0 0 0px 1000px #d3e4ff inset !important;
+        -webkit-text-fill-color: $light_gray !important;
+        font-size: 14px;
+
       }
     }
   }
