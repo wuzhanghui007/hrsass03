@@ -1,5 +1,5 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { login, getUserInfo } from '@/api/user'
+import { login, getUserInfo, getUserVetailById } from '@/api/user'
 
 const state = {
   token: getToken(),
@@ -33,7 +33,9 @@ const actions = {
   // 获取用户信息接口
   async getUserInfo(context) {
     const result = await getUserInfo()
-    context.commit('setUserInfo', result)
+    // 获取用户详情/头像
+    const baseInfo = await getUserVetailById(result.userId)
+    context.commit('setUserInfo', { ...result, ...baseInfo })
     return result // 后面权限使用
   }
 

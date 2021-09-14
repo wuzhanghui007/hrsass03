@@ -16,6 +16,12 @@ export function getUserInfo() {
 
   })
 }
+// 获取个人头像
+export function getUserVetailById(id) {
+  return request({
+    url: `/sys/user/${id}`
+  })
+}
 export function logout() {
 
 }
