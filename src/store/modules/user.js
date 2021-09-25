@@ -37,6 +37,13 @@ const actions = {
     const baseInfo = await getUserVetailById(result.userId)
     context.commit('setUserInfo', { ...result, ...baseInfo })
     return result // 后面权限使用
+  },
+  // 登出的action
+  logout(context) {
+    // 删除token
+    context.commit('removeToken') // 不仅仅删除了vuex中的 还删除了缓存中的
+    // 删除用户资料
+    context.commit('removeUserInfo') // 删除用户信息
   }
 
 }
