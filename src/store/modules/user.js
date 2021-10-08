@@ -1,4 +1,4 @@
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, setTimeStamp } from '@/utils/auth'
 import { login, getUserInfo, getUserVetailById } from '@/api/user'
 
 const state = {
@@ -29,6 +29,7 @@ const actions = {
   async login(context, data) {
     const result = await login(data)
     context.commit('setToken', result) // 返回数据经过响应拦截器处理
+    setTimeStamp()
   },
   // 获取用户信息接口
   async getUserInfo(context) {
