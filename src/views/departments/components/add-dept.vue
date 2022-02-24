@@ -1,7 +1,7 @@
 <template>
   <el-dialog
-    title="提示"
-    :visible.sync="showDialog"
+    :title="title"
+    :visible="showDialog"
     width="45%"
     heigth="80%"
     @close="handleClose"
@@ -114,9 +114,16 @@ export default {
 
     }
   },
+  computed: {
+    title() {
+      // 判断是否为编辑弹框显示对应的标题
+      return (this.formData.id ? '编辑部门' : '添加子部门')
+    }
+  },
   methods: {
     // 弹框关闭
     handleClose() {
+      this.formData.id = ''
       this.$emit('update:showDialog', false)
       this.$refs.deptForm.resetFields()
     },
