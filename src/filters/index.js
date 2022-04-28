@@ -397,3 +397,11 @@ export function getBlob(response) {
 export function imgHandle(obj) {
   return window.URL.createObjectURL(obj)
 }
+// getIntegerPoint
+// 图片 blob 流转化为可用 src
+export function getInteger(obj) {
+  return obj
+}
+export function getIntegerPoint(obj) {
+  return obj
+}
