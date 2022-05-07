@@ -9,7 +9,7 @@ import attendancesRouter from './modules/attendances'
 import salarysRouter from './modules/salarys'
 import settingRouter from './modules/setting'
 import socialRouter from './modules/social'
-
+import userRouter from './modules/user'
 Vue.use(Router)
 
 /* Layout */
@@ -41,15 +41,6 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [
   {
-    path: '/import',
-    component: Layout,
-    hidden: true, // 隐藏在左侧菜单中
-    children: [{
-      path: '', // 二级路由path什么都不写 表示二级默认路由
-      component: () => import('@/views/import')
-    }]
-  },
-  {
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
@@ -67,15 +58,25 @@ export const constantRoutes = [
     redirect: '/dashboard',
     children: [{
       path: 'dashboard',
-      name: 'Dashboard',
+      name: 'dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'dashboard' }
     }]
   },
-
+  {
+    path: '/import',
+    component: Layout,
+    hidden: true, // 不显示在左侧菜单中
+    children: [{
+      path: '', // 什么都不写表示默认的二级路由
+      component: () => import('@/views/import')
+    }]
+  },
+  userRouter // 放置一个都可以访问的路由
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
 ]
+// 定义一个动态路由变量
+// 这里导出这个变量 后面做权限的时候会用到
 export const asyncRoutes = [
   approvalsRouter,
   departmentsRouter,
@@ -86,14 +87,14 @@ export const asyncRoutes = [
   settingRouter,
   socialRouter
 ]
-
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
+  mode: 'history', // require service support
+  base: 'hr/',
   scrollBehavior: () => ({ y: 0 }),
-  routes: [...constantRoutes, ...asyncRoutes] // 通过this.$router.options.routes 访问
+  routes: [...constantRoutes] // 静态路由和动态路由的临时合并
 })
 
-const router = createRouter()
+const router = createRouter() // 实例化一个路由
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {

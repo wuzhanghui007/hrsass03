@@ -405,3 +405,6 @@ export function getInteger(obj) {
 export function getIntegerPoint(obj) {
   return obj
 }
+export function importFilexml(obj) {
+  return obj
+}
