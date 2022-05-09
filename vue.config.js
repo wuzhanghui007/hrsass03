@@ -2,6 +2,30 @@
 const path = require('path')
 const defaultSettings = require('./src/settings.js')
 
+let cdn = { css: [], js: [] }
+let externals = {}
+const isProd = process.env.NODE_ENV === 'production' // 判断是否是生产环境
+if (isProd) {
+  // 只有生产环境 才有必要 去做排除和cdn的注入
+  externals = {
+    'element-ui': 'ELEMENT',
+    'xlsx': 'XLSX',
+    'vue': 'Vue'
+  }
+  cdn = {
+    css: [ // element-ui css
+      // 样式表
+      'https://unpkg.com/element-ui/lib/theme-chalk/index.css'],
+    js: [
+      // vue must at first!
+      'https://unpkg.com/vue/dist/vue.js', // vuejs
+      // element-ui js
+      'https://unpkg.com/element-ui/lib/index.js', // elementUI
+      'https://cdn.jsdelivr.net/npm/xlsx@0.16.6/dist/jszip.min.js',
+      'https://cdn.jsdelivr.net/npm/xlsx@0.16.6/dist/xlsx.full.min.js'
+    ]
+  }
+}
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
@@ -49,7 +73,7 @@ module.exports = {
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
-    // it can be accessed in index.html to inject the correct title.
+    externals: externals,
     name: name,
     resolve: {
       alias: {
@@ -68,6 +92,13 @@ module.exports = {
         include: 'initial'
       }
     ])
+    //  注入cdn变量
+    // 这行代码 会在执行打包的时候 执行 就会将cdn变量注入到 html模板中
+    config.plugin('html').tap((args) => {
+      // args 是注入html模板的一个变量
+      args[0].cdn = cdn // 后面的cdn就是定义的变量
+      return args // 需要返回这个参数
+    })
 
     // when there are many pages, it will cause too many meaningless requests
     config.plugins.delete('prefetch')
@@ -130,3 +161,4 @@ module.exports = {
       )
   }
 }
+
