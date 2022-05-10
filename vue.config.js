@@ -2,6 +2,18 @@
 const path = require('path')
 const defaultSettings = require('./src/settings.js')
 
+function resolve(dir) {
+  return path.join(__dirname, dir)
+}
+
+const name = defaultSettings.title || 'vue Admin Template' // page title
+
+// If your port is set to 80,
+// use administrator privileges to execute the command line.
+// For example, Mac: sudo npm run
+// You can change the port by the following methods:
+// port = 9528 npm run dev OR npm run dev --port = 9528
+const port = process.env.port || process.env.npm_config_port || 9528 // dev port
 let cdn = { css: [], js: [] }
 let externals = {}
 const isProd = process.env.NODE_ENV === 'production' // 判断是否是生产环境
@@ -18,7 +30,7 @@ if (isProd) {
       'https://unpkg.com/element-ui/lib/theme-chalk/index.css'],
     js: [
       // vue must at first!
-      'https://unpkg.com/vue/dist/vue.js', // vuejs
+      'https://cdn.jsdelivr.net/npm/vue/dist/vue.js', // vuejs https://cdn.jsdelivr.net/npm/vue/dist/vue.js
       // element-ui js
       'https://unpkg.com/element-ui/lib/index.js', // elementUI
       'https://cdn.jsdelivr.net/npm/xlsx@0.16.6/dist/jszip.min.js',
@@ -26,18 +38,6 @@ if (isProd) {
     ]
   }
 }
-function resolve(dir) {
-  return path.join(__dirname, dir)
-}
-
-const name = defaultSettings.title || 'vue Admin Template' // page title
-
-// If your port is set to 80,
-// use administrator privileges to execute the command line.
-// For example, Mac: sudo npm run
-// You can change the port by the following methods:
-// port = 9528 npm run dev OR npm run dev --port = 9528
-const port = process.env.port || process.env.npm_config_port || 9528 // dev port
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -73,13 +73,18 @@ module.exports = {
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
-    externals: externals,
+    // it can be accessed in index.html to inject the correct title.
     name: name,
     resolve: {
       alias: {
         '@': resolve('src')
       }
-    }
+    },
+    // 要排除的包名
+    // key(是要排除的包名): value(实际上是实际引入的包的全局的变量名 )
+    // 因为要排除element-ui 所以后面要引入CDN文件 CDN文件中有ELEMENTUI的全局变量名
+    // externals首先会排除掉 定义的包名,空出来的位置  会用变量来替换
+    externals: externals
   },
   chainWebpack(config) {
     // it can improve the speed of the first screen, it is recommended to turn on preload
@@ -99,7 +104,6 @@ module.exports = {
       args[0].cdn = cdn // 后面的cdn就是定义的变量
       return args // 需要返回这个参数
     })
-
     // when there are many pages, it will cause too many meaningless requests
     config.plugins.delete('prefetch')
 
@@ -161,4 +165,3 @@ module.exports = {
       )
   }
 }
-
